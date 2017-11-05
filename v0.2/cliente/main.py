@@ -6,6 +6,7 @@ from sprites import *
 from dblaberinto import *
 import socket
 import pickle
+from mapeo import *
 
 class Game:
     def __init__(self):
@@ -59,6 +60,7 @@ class Game:
                     Oro(self, col, row)
                 if tile == 'G':
                     Guardia(self, col, row)
+        self.camera = Camera(1024, 768)
 
     def run(self):
         # Loop del juego
@@ -84,6 +86,7 @@ class Game:
     def update(self):
         # Actualizar imagen
         self.all_sprites.update()
+        self.camera.update(self.player)
 
     def draw_grid(self):
         # Metodo de dibujo de grilla
@@ -96,7 +99,9 @@ class Game:
         # Dibujar fondo, grilla y sprites
         self.screen.fill(BGCOLOR)
         # self.draw_grid()
-        self.all_sprites.draw(self.screen)
+        #self.all_sprites.draw(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
         pg.display.flip()
 
     def events(self):
@@ -117,7 +122,7 @@ class Game:
                     self.player.move(dy=1)
 
     def show_ganaste(self):
-        fondo = pg.image.load('imagen.png')
+        fondo = pg.image.load("youwin.jpg")
         self.screen.blit(fondo, (0, 0))
         pg.display.flip()
         for event in pg.event.get():
@@ -125,7 +130,7 @@ class Game:
                 self.quit()
 
     def show_perdiste(self):
-        fondo = pg.image.load('imagen.png')
+        fondo = pg.image.load("gameover.png")
         self.screen.blit(fondo, (0, 0))
         pg.display.flip()
         for event in pg.event.get():
